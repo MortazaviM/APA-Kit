@@ -2,7 +2,7 @@ import socket
 import requests
 
 class Enumeration():
-
+    #enumeration in net
     @classmethod
     def ip_finder(self,url):
         ip=socket.gethostbyname(url)
