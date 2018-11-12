@@ -1,4 +1,4 @@
-# APA-Kit
+# APA-Kit 1.0.0
 Small tool under development based on vulnerability scaning
 ## Getting Started
 just clone it! ready to use!
@@ -67,3 +67,6 @@ path=/
 domain=.google.com
 HttpOnly
 ```
+
+# Versioning
+We use [SemVer](http://semver.org/) for versioning
