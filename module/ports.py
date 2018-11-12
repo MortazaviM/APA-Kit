@@ -10,9 +10,7 @@ class PortScanning(object):
     def setHost(self, host):
         self.__host=host
 
-
-
-    
+    @staticmethod
     def openports(ip,port):
         #ip=Enumeration.ip_finder(self.__host)
         soc=socket.socket()

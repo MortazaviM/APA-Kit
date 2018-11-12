@@ -102,3 +102,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+module/__init__.py
+module/enum.py
+module/ports.py
