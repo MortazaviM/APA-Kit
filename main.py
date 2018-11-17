@@ -3,6 +3,7 @@ import optparse
 from module.enum import Enumeration
 from module.ports import PortScanning
 from threading import Thread
+from module.crawler import garbage
 
 url=""
 port=""
@@ -17,6 +18,7 @@ def main():
     parser.add_option('-r','--resolve', dest='resolve',action="store_true", default=False, help='hostname to ip')
     parser.add_option('-o','--openport', dest='openport', type='string', help='Open Port Scanning')
     parser.add_option('-e','--header', dest='header',action="store_true", default=False, help='extract header info')
+    parser.add_option('-v','--vuln', dest='vulnerability',action="store_true", default=False, help='HTTP vulnerability scanner')
     options, args = parser.parse_args()
 
 
@@ -25,7 +27,7 @@ def main():
         print('Port has been set! ' + '[' + port + ']')
     if(options.server != None):
         url=options.server
-        print('Url has been set! ' + '[' + url + ']')
+        #print('Url has been set! ' + '[' + url + ']')
     if(options.resolve == True):
         ip=Enumeration.ip_finder(url)
         print('ip >>> [' + ip + ']')
@@ -57,6 +59,14 @@ def main():
         for header, value in header_ip.headers.items():
             print(header + " : " + str(value).replace(';','\n'))
         print('Done!')
+
+    if (options.vulnerability == True):
+        garbage(url)
+        #thread2=[]
+        #t2=Thread(target=spider, args=(url,))
+        #thread2.append(t2)
+        #t2.start()
+
 
 if __name__ == "__main__":
     main()
