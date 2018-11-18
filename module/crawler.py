@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
-import urllib.request as urllib2
+import urllib 
+from urllib.request import Request, urlopen
 import re
 from threading import Thread
 #import requests
@@ -8,8 +9,14 @@ from pathlib import Path
 import time
 import requests
 import random
+from module.proxy import random_proxy
+from fake_useragent import UserAgent 
 
+number=0
 head=[]
+ua = UserAgent() # From here we generate a random user agent
+proxies = [] # Will contain proxies [ip, port]
+
 def garbage(url, max=200):
     base=finalurl(url)
     folder=''
@@ -37,6 +44,9 @@ def garbage(url, max=200):
             i+=1
         else:
             break
+
+
+            
     for link in links:
         t=Thread(target=header, args=(link,))
         threads.append(t)
@@ -54,7 +64,7 @@ def garbage(url, max=200):
 
 def spider(url, origin):
     tmp=[]
-    html_page = urllib2.urlopen(url)
+    html_page = urllib.request.urlopen(url)
     soup = BeautifulSoup(html_page,  'html.parser')
     
     for link in soup.findAll('a'):
@@ -123,22 +133,45 @@ def header(url):
     'User-Agent': agent[random.randint(0,21)],
     'From': 'ixtixt@domain.com'  # This is another valid field
     }
-    try:
-        r = requests.get(url, headers=headers, verify=False)
-        if(r.status_code==200):
-            head.append(url+ str(r.headers))
+    time.sleep(2)
+    global number
+    number +=1
+
+
+        #try:
+    #    r = requests.head(url, headers=headers, verify=True)
+    #    if(r.status_code==200):
+    #        head.append(url+ str(r.headers))
         #return r.headers
-        else:
-            head.append(url + ' >>> error')
-    except:
-        pass
-    #time.sleep(0.01)
+    #    else:
+    #        head.append(url + ' >>> error')
+    #except:
+    #    pass
+    #if number % 10 == 0:
+    proxy_index = random_proxy()
+    prxy = proxies[proxy_index]
+        
+    req = Request(url)
+    req.set_proxy(prxy['ip'] + ':' + prxy['port'], 'http')
+    req.add_header('User-Agent', ua.random)
+    site = urllib.request.urlopen(req).read().decode('utf8')
+    if(site.getcode ==200):   
+        head.append(url+ str(req.headers))
+    else:
+        head.append(url + ' >>> error')
+
+        
+
+        #req.set_proxy('195.154.8.'+ str(random.randint(1,254)) + ':' + '30712', 'http')
+        #my_ip = urlopen(req).read().decode('utf8')
+        #print('#' + str(1) + ': ' + my_ip)
+
+
     
 
 
-    #print('\n')
-
 
 def finalurl(url):
-    response = urllib2.urlopen(url)
-    return response.geturl()
+    with urllib.request.urlopen(url) as ur:
+        response = ur.geturl()
+    return response
