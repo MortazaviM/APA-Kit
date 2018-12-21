@@ -1,4 +1,4 @@
-# APA-Kit 1.0.0
+# APA-Kit 1.0.1
 Small tool under development based on vulnerability scaning
 ## Getting Started
 just clone it! ready to use!
@@ -13,7 +13,7 @@ python main.py -s example.com [--switches]
 * -r, --resolve : hostname to ip
 * -o OPENPORT, --openport=OPENPORT : Open Port Scanning
 * -e, --header : extract header info
-
+* -b, --proxy : Use Proxy
 ## Port Scanner
 ### Start
 Example:
