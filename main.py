@@ -11,6 +11,21 @@ def main():
 
     clear = lambda: os.system('cls')
     clear()
+
+    print("\n\033[92m*******************************************************************")
+    print(r"*            _____                ________                        *")
+    print(r"*     / \   ||_-_\\  / \   || //||--------                        *")
+    print(r"*    /|_|\  ||    ||/|_|\  ||// ||   ||                           *")
+    print(r"*   /_|-|_\ ||-_-///_|-|_\ ||\\ ||   ||                           *")
+    print(r"*  /__| |__\||    /__| |__\|| \\||   ||                           *")
+    print("*                                                                 *")
+    print("* APA-Kit Ver. 1.0.1                                              *")
+    print("* Created By Mohammad Mortazavi                                   *")
+    print("* APA Kharazmi Security Lab                                       *")
+    print("* cert.khu.ac.ir                                                  *")    
+    print("*******************************************************************\033[94m\n\n")
+
+
     parser = optparse.OptionParser()
 
     parser.add_option('-s','--server', dest='server', type='string', help='specify target URLs with http(s) [http(s)://example.com]')
@@ -19,9 +34,13 @@ def main():
     parser.add_option('-o','--openport', dest='openport', type='string', help='Open Port Scanning')
     parser.add_option('-e','--header', dest='header',action="store_true", default=False, help='extract header info')
     parser.add_option('-v','--vuln', dest='vulnerability',action="store_true", default=False, help='HTTP vulnerability scanner')
+    parser.add_option('-b','--proxy', dest='Proxy',action="store_true", default=False, help='Use Proxy')
     options, args = parser.parse_args()
 
+    flag=False
 
+    if(options.Proxy == True):
+        flag=True
     if(options.port != None):
         port=options.port
         print('Port has been set! ' + '[' + port + ']')
@@ -61,7 +80,7 @@ def main():
         print('Done!')
 
     if (options.vulnerability == True):
-        garbage(url)
+        garbage(url ,200,flag)
         #thread2=[]
         #t2=Thread(target=spider, args=(url,))
         #thread2.append(t2)

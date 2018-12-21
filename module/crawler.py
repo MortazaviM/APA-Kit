@@ -9,21 +9,27 @@ from pathlib import Path
 import time
 import requests
 import random
-from module.proxy import random_proxy
+from module.proxy import random_proxy, setter
 from fake_useragent import UserAgent 
 
+ave=[]
 number=0
 head=[]
 ua = UserAgent() # From here we generate a random user agent
 proxies = [] # Will contain proxies [ip, port]
 
-def garbage(url, max=200):
+def garbage(url, max=200, flag=False):
+    global ave
+    if flag:
+        ave=setter()
+    else:
+        ave=''
     base=finalurl(url)
     folder=''
     threads=[]
     links=[base]
     i=0
-    while(len(links) < 100):
+    while(len(links) < 200):
         if( i <= len(links)):
             #webpage = urlparse.urlparse(links[i]).path.split('/')[-1]
             webpage = links[i].split('/')[-1]
@@ -48,7 +54,7 @@ def garbage(url, max=200):
 
             
     for link in links:
-        t=Thread(target=header, args=(link,))
+        t=Thread(target=header, args=(link,flag,))
         threads.append(t)
         t.start()
         #header(link)
@@ -104,7 +110,7 @@ def linker(url, base):
                     #print(contents.headers)
                     #print('\n')
 
-def header(url):
+def header(url, flag):
     agent =[
     'APA Kit Agent 1.0' ,
     'Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1',
@@ -137,6 +143,8 @@ def header(url):
     global number
     number +=1
 
+    session = requests.session()
+    #session.proxies = {}
 
         #try:
     #    r = requests.head(url, headers=headers, verify=True)
@@ -148,27 +156,25 @@ def header(url):
     #except:
     #    pass
     #if number % 10 == 0:
-    proxy_index = random_proxy()
-    prxy = proxies[proxy_index]
-        
-    req = Request(url)
-    req.set_proxy(prxy['ip'] + ':' + prxy['port'], 'http')
-    req.add_header('User-Agent', ua.random)
-    site = urllib.request.urlopen(req).read().decode('utf8')
-    if(site.getcode ==200):   
-        head.append(url+ str(req.headers))
-    else:
-        head.append(url + ' >>> error')
+    #global ave
+    try:
+        if flag:
+            proxy_index = random.randint(0, len(ave)-1)
+            prxy = ave[proxy_index]
+            r= session.get(url,headers={'user-agent':ua.random}, proxies= {'http': 'http://'+prxy['ip'] + ':' + prxy['port']} , timeout=5)
+            z=session.get('http://icanhazip.com',headers={'user-agent':ua.random}, proxies= {'http': 'http://'+prxy['ip'] + ':' + prxy['port']} , timeout=5)
 
-        
+        else:
+            r= session.get(url, timeout=7)
+            z=" No Proxy "    
 
-        #req.set_proxy('195.154.8.'+ str(random.randint(1,254)) + ':' + '30712', 'http')
-        #my_ip = urlopen(req).read().decode('utf8')
-        #print('#' + str(1) + ': ' + my_ip)
-
-
+        if(r.status_code == 200):   
+            head.append(url+ ' >>> ' + str(z) + ' >>> ' + str(r.headers).strip() )
+        else:
+            head.append(url + ' >>> '  + str(z)  + ' >>> '  + 'error')
     
-
+    except:
+        head.append(url + ' >>>'  + " [null] " + '>>>'  + 'error')    
 
 
 def finalurl(url):
